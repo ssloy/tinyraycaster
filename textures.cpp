@@ -45,12 +45,12 @@ Texture::Texture(const std::string filename) : img_w(0), img_h(0), count(0), siz
     stbi_image_free(pixmap);
 }
 
-uint32_t &Texture::get(const size_t i, const size_t j, const size_t idx) {
+uint32_t Texture::get(const size_t i, const size_t j, const size_t idx) const {
     assert(i<size && j<size && idx<count);
     return img[i+idx*size+j*img_w];
 }
 
-std::vector<uint32_t> Texture::get_scaled_column(const size_t texture_id, const size_t tex_coord, const size_t column_height) {
+std::vector<uint32_t> Texture::get_scaled_column(const size_t texture_id, const size_t tex_coord, const size_t column_height) const {
     assert(tex_coord<size && texture_id<count);
     std::vector<uint32_t> column(column_height);
     for (size_t y=0; y<column_height; y++) {

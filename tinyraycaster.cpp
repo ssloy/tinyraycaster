@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
-#include <algorithm>
 #include <vector>
 #include <cstdint>
 #include <cassert>
@@ -14,8 +13,9 @@
 #include "sprite.h"
 #include "framebuffer.h"
 #include "textures.h"
+#include "tinyraycaster.h"
 
-int wall_x_texcoord(const float hitx, const float hity, Texture &tex_walls) {
+int wall_x_texcoord(const float hitx, const float hity, const Texture &tex_walls) {
     float x = hitx - floor(hitx+.5); // x and y contain (signed) fractional parts of hitx and hity,
     float y = hity - floor(hity+.5); // they vary between -0.5 and +0.5, and one of them is supposed to be very close to 0
     int tex = x*tex_walls.size;
@@ -27,13 +27,23 @@ int wall_x_texcoord(const float hitx, const float hity, Texture &tex_walls) {
     return tex;
 }
 
-void map_show_sprite(Sprite &sprite, FrameBuffer &fb, Map &map) {
-    const size_t rect_w = fb.w/(map.w*2); // size of one map cell on the screen
-    const size_t rect_h = fb.h/map.h;
-    fb.draw_rectangle(sprite.x*rect_w-3, sprite.y*rect_h-3, 6, 6, pack_color(255, 0, 0));
+void draw_map(FrameBuffer &fb, const std::vector<Sprite> &sprites, const Texture &tex_walls, const Map &map, const size_t cell_w, const size_t cell_h) {
+    for (size_t j=0; j<map.h; j++) {  // draw the map itself
+        for (size_t i=0; i<map.w; i++) {
+            if (map.is_empty(i, j)) continue; // skip empty spaces
+            size_t rect_x = i*cell_w;
+            size_t rect_y = j*cell_h;
+            size_t texid = map.get(i, j);
+            assert(texid<tex_walls.count);
+            fb.draw_rectangle(rect_x, rect_y, cell_w, cell_h, tex_walls.get(0, 0, texid)); // the color is taken from the upper left pixel of the texture #texid
+        }
+    }
+    for (size_t i=0; i<sprites.size(); i++) { // show the monsters
+        fb.draw_rectangle(sprites[i].x*cell_w-3, sprites[i].y*cell_h-3, 6, 6, pack_color(255, 0, 0));
+    }
 }
 
-void draw_sprite(Sprite &sprite, std::vector<float> &depth_buffer, FrameBuffer &fb, Player &player, Texture &tex_sprites) {
+void draw_sprite(FrameBuffer &fb, const Sprite &sprite, const std::vector<float> &depth_buffer, const Player &player, const Texture &tex_sprites) {
     // absolute direction from the player to the sprite (in radians)
     float sprite_dir = atan2(sprite.y - player.y, sprite.x - player.x);
     while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
@@ -57,35 +67,31 @@ void draw_sprite(Sprite &sprite, std::vector<float> &depth_buffer, FrameBuffer &
     }
 }
 
-void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &sprites, Texture &tex_walls, Texture &tex_monst) {
+void render(FrameBuffer &fb, const GameState &gs) {
+    const Map &map                     = gs.map;
+    const Player &player               = gs.player;
+    const std::vector<Sprite> &sprites = gs.monsters;
+    const Texture &tex_walls           = gs.tex_walls;
+    const Texture &tex_monst           = gs.tex_monst;
+
     fb.clear(pack_color(255, 255, 255)); // clear the screen
 
-    const size_t rect_w = fb.w/(map.w*2); // size of one map cell on the screen
-    const size_t rect_h = fb.h/map.h;
-    for (size_t j=0; j<map.h; j++) {  // draw the map
-        for (size_t i=0; i<map.w; i++) {
-            if (map.is_empty(i, j)) continue; // skip empty spaces
-            size_t rect_x = i*rect_w;
-            size_t rect_y = j*rect_h;
-            size_t texid = map.get(i, j);
-            assert(texid<tex_walls.count);
-            fb.draw_rectangle(rect_x, rect_y, rect_w, rect_h, tex_walls.get(0, 0, texid)); // the color is taken from the upper left pixel of the texture #texid
-        }
-    }
-
+    const size_t cell_w = fb.w/(map.w*2); // size of one map cell on the screen
+    const size_t cell_h = fb.h/map.h;
     std::vector<float> depth_buffer(fb.w/2, 1e3);
+
     for (size_t i=0; i<fb.w/2; i++) { // draw the visibility cone AND the "3D" view
         float angle = player.a-player.fov/2 + player.fov*i/float(fb.w/2);
         for (float t=0; t<20; t+=.01) { // ray marching loop
             float x = player.x + t*cos(angle);
             float y = player.y + t*sin(angle);
-            fb.set_pixel(x*rect_w, y*rect_h, pack_color(160, 160, 160)); // this draws the visibility cone
+            fb.set_pixel(x*cell_w, y*cell_h, pack_color(190, 190, 190)); // this draws the visibility cone
 
             if (map.is_empty(x, y)) continue;
 
             size_t texid = map.get(x, y); // our ray touches a wall, so draw the vertical column to create an illusion of 3D
             assert(texid<tex_walls.count);
-            float dist = .2+t*cos(angle-player.a);
+            float dist = t*cos(angle-player.a);
             depth_buffer[i] = dist;
             size_t column_height = fb.h/dist;
             int x_texcoord = wall_x_texcoord(x, y, tex_walls);
@@ -101,21 +107,10 @@ void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &spri
         } // ray marching loop
     } // field of view ray sweeping
 
-    for (size_t i=0; i<sprites.size(); i++) { // update the distances from the player to each sprite
-        sprites[i].player_dist = std::sqrt(pow(player.x - sprites[i].x, 2) + pow(player.y - sprites[i].y, 2));
-    }
-    std::sort(sprites.begin(), sprites.end()); // sort it from farthest to closest
+    draw_map(fb, sprites, tex_walls, map, cell_w, cell_h);
 
     for (size_t i=0; i<sprites.size(); i++) { // draw the sprites
-        map_show_sprite(sprites[i], fb, map);
-        draw_sprite(sprites[i], depth_buffer, fb, player, tex_monst);
+        draw_sprite(fb, sprites[i], depth_buffer, player, tex_monst);
     }
 }
 
-/*
-int main() {
-    drop_ppm_image("./out.ppm", fb.img, fb.w, fb.h);
-
-    return 0;
-}
-*/
