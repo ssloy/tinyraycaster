@@ -111,7 +111,7 @@ int main() {
                 if (map[int(cx)+int(cy)*map_w]!=' ') { // our ray touches a wall, so draw the vertical column to create an illusion of 3D
                     size_t icolor = map[int(cx)+int(cy)*map_w] - '0';
                     assert(icolor<ncolors);
-                    size_t column_height = win_h/t;
+                    size_t column_height = win_h/(t*cos(angle-player_a));
                     draw_rectangle(framebuffer, win_w, win_h, win_w/2+i, win_h/2-column_height/2, 1, column_height, colors[icolor]);
                     break;
                 }
