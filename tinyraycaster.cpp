@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <cstdint>
 #include <cassert>
@@ -38,14 +39,13 @@ void draw_sprite(Sprite &sprite, std::vector<float> &depth_buffer, FrameBuffer &
     while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
     while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
 
-    float sprite_dist = std::sqrt(pow(player.x - sprite.x, 2) + pow(player.y - sprite.y, 2)); // distance from the player to the sprite
-    size_t sprite_screen_size = std::min(1000, static_cast<int>(fb.h/sprite_dist)); // screen sprite size
+    size_t sprite_screen_size = std::min(1000, static_cast<int>(fb.h/sprite.player_dist)); // screen sprite size
     int h_offset = (sprite_dir - player.a)/player.fov*(fb.w/2) + (fb.w/2)/2 - tex_sprites.size/2; // do not forget the 3D view takes only a half of the framebuffer
     int v_offset = fb.h/2 - sprite_screen_size/2;
 
     for (size_t i=0; i<sprite_screen_size; i++) {
         if (h_offset+int(i)<0 || h_offset+i>=fb.w/2) continue;
-        if (depth_buffer[h_offset+i]<sprite_dist) continue; // this sprite column is occluded
+        if (depth_buffer[h_offset+i]<sprite.player_dist) continue; // this sprite column is occluded
         for (size_t j=0; j<sprite_screen_size; j++) {
             if (v_offset+int(j)<0 || v_offset+j>=fb.h) continue;
             uint32_t color = tex_sprites.get(i*tex_sprites.size/sprite_screen_size, j*tex_sprites.size/sprite_screen_size, sprite.tex_id);
@@ -101,7 +101,12 @@ void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &spri
         } // ray marching loop
     } // field of view ray sweeping
 
-    for (size_t i=0; i<sprites.size(); i++) {
+    for (size_t i=0; i<sprites.size(); i++) { // update the distances from the player to each sprite
+        sprites[i].player_dist = std::sqrt(pow(player.x - sprites[i].x, 2) + pow(player.y - sprites[i].y, 2));
+    }
+    std::sort(sprites.begin(), sprites.end()); // sort it from farthest to closest
+
+    for (size_t i=0; i<sprites.size(); i++) { // draw the sprites
         map_show_sprite(sprites[i], fb, map);
         draw_sprite(sprites[i], depth_buffer, fb, player, tex_monst);
     }
@@ -117,7 +122,7 @@ int main() {
         std::cerr << "Failed to load textures" << std::endl;
         return -1;
     }
-    std::vector<Sprite> sprites{ {3.523, 3.812, 2}, {1.834, 8.765, 0}, {5.323, 5.365, 1}, {4.123, 10.265, 1} };
+    std::vector<Sprite> sprites{ {3.523, 3.812, 2, 0}, {1.834, 8.765, 0, 0}, {5.323, 5.365, 1, 0}, {4.123, 10.265, 1, 0} };
 
     render(fb, map, player, sprites, tex_walls, tex_monst);
     drop_ppm_image("./out.ppm", fb.img, fb.w, fb.h);
