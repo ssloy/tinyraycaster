@@ -65,6 +65,8 @@ int main() {
                        "0              0"\
                        "0002222222200000"; // our game map
     assert(sizeof(map) == map_w*map_h+1); // +1 for the null terminated string
+    float player_x = 3.456; // player x position
+    float player_y = 2.345; // player y position
 
     for (size_t j = 0; j<win_h; j++) { // fill the screen with color gradients
         for (size_t i = 0; i<win_w; i++) {
@@ -85,6 +87,9 @@ int main() {
             draw_rectangle(framebuffer, win_w, win_h, rect_x, rect_y, rect_w, rect_h, pack_color(0, 255, 255));
         }
     }
+
+    // draw the player on the map
+    draw_rectangle(framebuffer, win_w, win_h, player_x*rect_w, player_y*rect_h, 5, 5, pack_color(255, 255, 255));
 
     drop_ppm_image("./out.ppm", framebuffer, win_w, win_h);
 
