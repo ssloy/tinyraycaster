@@ -117,7 +117,7 @@ int main() {
         std::cerr << "Failed to load textures" << std::endl;
         return -1;
     }
-    std::vector<Sprite> sprites{ {1.834, 8.765, 0}, {5.323, 5.365, 1}, {4.123, 10.265, 1} };
+    std::vector<Sprite> sprites{ {3.523, 3.812, 2}, {1.834, 8.765, 0}, {5.323, 5.365, 1}, {4.123, 10.265, 1} };
 
     render(fb, map, player, sprites, tex_walls, tex_monst);
     drop_ppm_image("./out.ppm", fb.img, fb.w, fb.h);
