@@ -67,6 +67,7 @@ int main() {
     assert(sizeof(map) == map_w*map_h+1); // +1 for the null terminated string
     float player_x = 3.456; // player x position
     float player_y = 2.345; // player y position
+    float player_a = 1.523; // player view direction
 
     for (size_t j = 0; j<win_h; j++) { // fill the screen with color gradients
         for (size_t i = 0; i<win_w; i++) {
@@ -90,6 +91,16 @@ int main() {
 
     // draw the player on the map
     draw_rectangle(framebuffer, win_w, win_h, player_x*rect_w, player_y*rect_h, 5, 5, pack_color(255, 255, 255));
+
+    for (float t=0; t<20; t+=.05) {
+        float cx = player_x + t*cos(player_a);
+        float cy = player_y + t*sin(player_a);
+        if (map[int(cx)+int(cy)*map_w]!=' ') break;
+
+        size_t pix_x = cx*rect_w;
+        size_t pix_y = cy*rect_h;
+        framebuffer[pix_x + pix_y*win_w] = pack_color(255, 255, 255);
+    }
 
     drop_ppm_image("./out.ppm", framebuffer, win_w, win_h);
 
