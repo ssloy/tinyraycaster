@@ -40,7 +40,7 @@ void draw_sprite(Sprite &sprite, std::vector<float> &depth_buffer, FrameBuffer &
     while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
 
     size_t sprite_screen_size = std::min(1000, static_cast<int>(fb.h/sprite.player_dist)); // screen sprite size
-    int h_offset = (sprite_dir - player.a)/player.fov*(fb.w/2) + (fb.w/2)/2 - tex_sprites.size/2; // do not forget the 3D view takes only a half of the framebuffer
+    int h_offset = (sprite_dir - player.a)*(fb.w/2) + (fb.w/2)/2 - tex_sprites.size/2; // do not forget the 3D view takes only a half of the framebuffer
     int v_offset = fb.h/2 - sprite_screen_size/2;
 
     for (size_t i=0; i<sprite_screen_size; i++) {
@@ -85,7 +85,7 @@ void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &spri
 
             size_t texid = map.get(x, y); // our ray touches a wall, so draw the vertical column to create an illusion of 3D
             assert(texid<tex_walls.count);
-            float dist = t*cos(angle-player.a);
+            float dist = .2+t*cos(angle-player.a);
             depth_buffer[i] = dist;
             size_t column_height = fb.h/dist;
             int x_texcoord = wall_x_texcoord(x, y, tex_walls);
