@@ -94,9 +94,9 @@ int main() {
                        "0     0  1110000"\
                        "0     3        0"\
                        "0   10000      0"\
-                       "0   0   11100  0"\
-                       "0   0   0      0"\
-                       "0   0   1  00000"\
+                       "0   3   11100  0"\
+                       "5   4   0      0"\
+                       "5   4   1  00000"\
                        "0       1      0"\
                        "2       1      0"\
                        "0       0      0"\
@@ -108,12 +108,6 @@ int main() {
     float player_y = 2.345; // player y position
     float player_a = 1.523; // player view direction
     const float fov = M_PI/3.; // field of view
-
-    const size_t ncolors = 10;
-    std::vector<uint32_t> colors(ncolors);
-    for (size_t i=0; i<ncolors; i++) {
-        colors[i] = pack_color(rand()%255, rand()%255, rand()%255);
-    }
 
     std::vector<uint32_t> walltext; // textures for the walls
     size_t walltext_size;  // texture dimensions (it is a square)
@@ -130,9 +124,9 @@ int main() {
             if (map[i+j*map_w]==' ') continue; // skip empty spaces
             size_t rect_x = i*rect_w;
             size_t rect_y = j*rect_h;
-            size_t icolor = map[i+j*map_w] - '0';
-            assert(icolor<ncolors);
-            draw_rectangle(framebuffer, win_w, win_h, rect_x, rect_y, rect_w, rect_h, colors[icolor]);
+            size_t texid = map[i+j*map_w] - '0';
+            assert(texid<walltext_cnt);
+            draw_rectangle(framebuffer, win_w, win_h, rect_x, rect_y, rect_w, rect_h, walltext[texid*walltext_size]); // the color is taken from the upper left pixel of the texture #texid
         }
     }
 
@@ -147,19 +141,12 @@ int main() {
             framebuffer[pix_x + pix_y*win_w] = pack_color(160, 160, 160); // this draws the visibility cone
 
             if (map[int(cx)+int(cy)*map_w]!=' ') { // our ray touches a wall, so draw the vertical column to create an illusion of 3D
-                size_t icolor = map[int(cx)+int(cy)*map_w] - '0';
-                assert(icolor<ncolors);
+                size_t texid = map[int(cx)+int(cy)*map_w] - '0';
+                assert(texid<walltext_cnt);
                 size_t column_height = win_h/(t*cos(angle-player_a));
-                draw_rectangle(framebuffer, win_w, win_h, win_w/2+i, win_h/2-column_height/2, 1, column_height, colors[icolor]);
+                draw_rectangle(framebuffer, win_w, win_h, win_w/2+i, win_h/2-column_height/2, 1, column_height, walltext[texid*walltext_size]);
                 break;
             }
-        }
-    }
-
-    const size_t texid = 4; // draw the 4th texture on the screen
-    for (size_t i=0; i<walltext_size; i++) {
-        for (size_t j=0; j<walltext_size; j++) {
-            framebuffer[i+j*win_w] = walltext[i + texid*walltext_size + j*walltext_size*walltext_cnt];
         }
     }
 
