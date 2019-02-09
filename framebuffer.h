@@ -1,7 +1,7 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
-#include <cstdlib>
+#include <cstdint>
 #include <vector>
 
 struct FrameBuffer {

@@ -1,6 +1,9 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
+#include <vector>
+#include <cstdint>
+
 struct Texture {
     size_t img_w, img_h; // overall image dimensions
     size_t count, size;  // number of textures and size in pixels

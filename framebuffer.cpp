@@ -1,6 +1,3 @@
-#include <iostream>
-#include <vector>
-#include <cstdint>
 #include <cassert>
 
 #include "framebuffer.h"

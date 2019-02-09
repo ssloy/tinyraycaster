@@ -3,12 +3,7 @@
 #include <algorithm>
 #include "SDL.h"
 
-#include "map.h"
 #include "utils.h"
-#include "player.h"
-#include "sprite.h"
-#include "framebuffer.h"
-#include "textures.h"
 #include "tinyraycaster.h"
 
 int main() {
