@@ -27,4 +27,3 @@ void FrameBuffer::clear(const uint32_t color) {
     img = std::vector<uint32_t>(w*h, color);
 }
 
-
