@@ -32,7 +32,7 @@ void map_show_sprite(Sprite &sprite, FrameBuffer &fb, Map &map) {
     fb.draw_rectangle(sprite.x*rect_w-3, sprite.y*rect_h-3, 6, 6, pack_color(255, 0, 0));
 }
 
-void draw_sprite(Sprite &sprite, FrameBuffer &fb, Player &player, Texture &tex_sprites) {
+void draw_sprite(Sprite &sprite, std::vector<float> &depth_buffer, FrameBuffer &fb, Player &player, Texture &tex_sprites) {
     // absolute direction from the player to the sprite (in radians)
     float sprite_dir = atan2(sprite.y - player.y, sprite.x - player.x);
     while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
@@ -44,10 +44,15 @@ void draw_sprite(Sprite &sprite, FrameBuffer &fb, Player &player, Texture &tex_s
     int v_offset = fb.h/2 - sprite_screen_size/2;
 
     for (size_t i=0; i<sprite_screen_size; i++) {
-        if (h_offset+i<0 || h_offset+i>=fb.w/2) continue;
+        if (h_offset+int(i)<0 || h_offset+i>=fb.w/2) continue;
+        if (depth_buffer[h_offset+i]<sprite_dist) continue; // this sprite column is occluded
         for (size_t j=0; j<sprite_screen_size; j++) {
-            if (v_offset+j<0 || v_offset+j>=fb.h) continue;
-            fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, pack_color(0,0,0));
+            if (v_offset+int(j)<0 || v_offset+j>=fb.h) continue;
+            uint32_t color = tex_sprites.get(i*tex_sprites.size/sprite_screen_size, j*tex_sprites.size/sprite_screen_size, sprite.tex_id);
+            uint8_t r,g,b,a;
+            unpack_color(color, r, g, b, a);
+            if (a>128)
+            fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
         }
     }
 }
@@ -68,6 +73,7 @@ void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &spri
         }
     }
 
+    std::vector<float> depth_buffer(fb.w/2, 1e3);
     for (size_t i=0; i<fb.w/2; i++) { // draw the visibility cone AND the "3D" view
         float angle = player.a-player.fov/2 + player.fov*i/float(fb.w/2);
         for (float t=0; t<20; t+=.01) { // ray marching loop
@@ -80,6 +86,7 @@ void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &spri
             size_t texid = map.get(x, y); // our ray touches a wall, so draw the vertical column to create an illusion of 3D
             assert(texid<tex_walls.count);
             float dist = t*cos(angle-player.a);
+            depth_buffer[i] = dist;
             size_t column_height = fb.h/dist;
             int x_texcoord = wall_x_texcoord(x, y, tex_walls);
             std::vector<uint32_t> column = tex_walls.get_scaled_column(texid, x_texcoord, column_height);
@@ -96,7 +103,7 @@ void render(FrameBuffer &fb, Map &map, Player &player, std::vector<Sprite> &spri
 
     for (size_t i=0; i<sprites.size(); i++) {
         map_show_sprite(sprites[i], fb, map);
-        draw_sprite(sprites[i], fb, player, tex_monst);
+        draw_sprite(sprites[i], depth_buffer, fb, player, tex_monst);
     }
 }
 
