@@ -11,6 +11,8 @@ Click to see the video:
 # Few things tinyraycaster IS:
 * it IS a blank you can start from
 * it IS a project you can participate to, pull requests are welcome, and anyone can edit the wiki
+* it IS created in one day, check the commit history. I broke my leg, so I code instead of walking!
+* it IS full of bugs. Bugreports are welcome!
 
 As an example, [here are the sources](https://github.com/stephane-hulot/thanksgiving-party) for the game made by my students Salih Nascimento and Stephane Hulot, also check the following youtube video for a preview:
 
