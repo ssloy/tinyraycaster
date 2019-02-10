@@ -1,4 +1,4 @@
-# tinyraycaster - this is a stub repository, soon it will contain a teaching aid for an intorduction to programming illustrated with a simple raycaster
+# Project based learning: build your own 3D shooter in a weekend
 
 ![](https://raw.githubusercontent.com/ssloy/tinyraycaster/master/doc/016.png)
 
@@ -7,7 +7,7 @@
 * it is NOT even a 3d engine;
 * it is NOT a competitor for id Software products. People, please, I am not John Carmack and neither my students are. Focus on the word "initiation".
 
-#Few things tinyraycasiter IS:
+# Few things tinyraycasiter IS:
 * it IS a blank you can start from
 * it IS a project you can participate to, pull requests are welcome, and anyone can edit the wiki
 
