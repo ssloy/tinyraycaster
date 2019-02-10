@@ -48,7 +48,7 @@ make
 
 You can open the project in Gitpod, a free online dev evironment for GitHub:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ssloy/tinyraycaster/tree/63f1a5639a0f895da1c60e3698105f740f3aa319)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ssloy/tinyraycaster/tree/ea577d67088656918a85911448b9539421a8f3e1)
 
 
 On open, the editor will compile & run the program as well as open the resulting image in the editor's preview.
