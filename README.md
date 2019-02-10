@@ -1,7 +1,7 @@
 # Project based learning: build your own 3D shooter in a weekend
 
 Click to see the video:
-![https://raw.githubusercontent.com/ssloy/tinyraycaster/master/doc/016.png](https://youtu.be/zPIVTqVilCM)
+[![TinyRayCaster](https://raw.githubusercontent.com/ssloy/tinyraycaster/master/doc/016.png)](https://youtu.be/zPIVTqVilCM)
 
 # Few things tinyraycaster is NOT:
 * it is NOT a game, it is a mere stub;
