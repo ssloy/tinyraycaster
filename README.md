@@ -1,7 +1,5 @@
 # Project based learning: build your own 3D shooter in a weekend
 
-***
-
 **Check [the wiki](https://github.com/ssloy/tinyraycaster/wiki) for the detailed description of what is under the hood. Screw the source code, read the wiki.**
 
 If you are interested by this project, you might want to [check my other tiny* repositories](https://github.com/ssloy), they were fun for me to make, I hope it will fun for you to read.
@@ -21,15 +19,15 @@ haqreu@daffodil:~/tinyraycaster$ cat *.cpp *.h | wc -l
 # Few things tinyraycaster is NOT:
 * it is NOT a game, it is a mere stub;
 * it is NOT even a 3d engine;
-* it is NOT a place for design pattern lectures
+* it is NOT a place for design pattern lectures;
 * it is NOT a competitor for id Software products. People, please, I am not John Carmack and neither my students are. Focus on the word "initiation".
 
 # Few things tinyraycaster IS:
-* it IS fun
-* it IS a blank you can start from
-* it IS a project you can participate to, pull requests are welcome, and anyone can edit the wiki
+* it IS fun;
+* it IS a blank you can start from;
 * it IS created in one day, check the commit history. I broke my leg, so I wrote some code instead of walking!
-* it IS full of bugs. Bugreports/pull requests are welcome!
+* it IS a project you can participate to, pull requests are welcome, and anyone can edit the wiki;
+* it IS full of bugs. Bugreports are welcome!
 
 As an example, [here are the sources](https://github.com/stephane-hulot/thanksgiving-party) for the game made by my students Salih Nascimento and Stephane Hulot, also check the following youtube video for a preview:
 
