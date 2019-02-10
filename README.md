@@ -1,16 +1,22 @@
 # Project based learning: build your own 3D shooter in a weekend
 
+***
+
+**Check [the wiki](https://github.com/ssloy/tinyraycaster/wiki) for the detailed description of what is under the hood. Screw the source code, read the wiki.**
+
+If you are interested by this project, you might want to [check my other tiny* repositories](https://github.com/ssloy), they were fun for me to make, I hope it will fun for you to read.
 
 ***
 
-**Check [the wiki](https://github.com/ssloy/tinyraycaster/wiki) for the detailed description of what is under the hood.**
-
-If you are interested by this project, [check my other tiny* repositories](https://github.com/ssloy), it is quite possible you will find more fun stuff there.
-
-***
-
-Click to see the video:
+This video shows what lies in this repository:
 [![TinyRayCaster](https://raw.githubusercontent.com/ssloy/tinyraycaster/master/doc/017.png)](https://youtu.be/zPIVTqVilCM)
+
+At the time I write this text, the repository contains mere 486 lines of code:
+
+```sh
+haqreu@daffodil:~/tinyraycaster$ cat *.cpp *.h | wc -l
+486
+```
 
 # Few things tinyraycaster is NOT:
 * it is NOT a game, it is a mere stub;
