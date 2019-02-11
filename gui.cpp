@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
+#include <cmath>
 #include "SDL.h"
 
 #include "utils.h"
