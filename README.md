@@ -35,7 +35,7 @@ As an example, [here are the sources](https://github.com/stephane-hulot/thanksgi
 
 ## Compilation
 ```sh
-sudo apt-get install libsdl2-dev
+sudo apt install -y libsdl2-dev git
 git clone https://github.com/ssloy/tinyraycaster.git
 cd tinyraycaster
 mkdir build
@@ -44,7 +44,7 @@ cmake ..
 make
 ```
 
-You can open the project in Gitpod, a free online dev evironment for GitHub:
+You can open the project in Gitpod, a free online dev environment for GitHub:
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/ssloy/tinyraycaster)
 
