@@ -51,4 +51,4 @@ You can open the project in Gitpod, a free online dev evironment for GitHub:
 
 On open, the editor will compile & run the program as well as open the resulting image in the editor's preview.
 Just change the code in the editor and rerun the script (use the terminal's history) to see updated images.
-Note how Gitpod is awesome, it allows to run SDL2 games directly in the browser!
+Note how awesome Gitpod is, it allows to run SDL2 games directly in the browser!
