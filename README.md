@@ -2,7 +2,7 @@
 
 **Check [the wiki](https://github.com/ssloy/tinyraycaster/wiki) for the detailed description of what is under the hood. Screw the source code, read the wiki.**
 
-If you are interested by this project, you might want to [check my other tiny* repositories](https://github.com/ssloy), they were fun for me to make, I hope it will fun for you to read.
+If you are interested by this project, you might want to [check my other tiny* repositories](https://github.com/ssloy), they were fun for me to make, I hope it will be fun for you to read.
 
 ***
 
@@ -19,7 +19,7 @@ haqreu@daffodil:~/tinyraycaster$ cat *.cpp *.h | wc -l
 # Few things tinyraycaster is NOT:
 * it is NOT a game, it is a mere stub;
 * it is NOT even a 3d engine;
-* it is NOT a place for design pattern lectures;
+* it is NOT a place for design patterns lectures;
 * it is NOT a competitor for id Software products. People, please, I am not John Carmack and neither my students are. Focus on the word "initiation".
 
 # Few things tinyraycaster IS:
